@@ -17,8 +17,8 @@
 * Install the Swig ([Link](https://sourceforge.net/projects/swig/files/swigwin/swigwin-3.0.2/swigwin-3.0.2.zip/download)) -> (set the system path)
 * pip install -r requirements.txt
 
-### Train the LunarLander.
+### - Train the LunarLander.
 * python main.py
 
-### Test the LunarLander.
+### - Test the LunarLander.
 * python test.py
