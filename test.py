@@ -21,7 +21,7 @@ state_size = env.observation_space.shape[0]
 action_size = env.action_space.n
 
 loaded_model = QNetwork(state_size=state_size, action_size=action_size)
-loaded_model.load_state_dict(torch.load("./results/models/best_reward_model.pth"))
+loaded_model.load_state_dict(torch.load("./results/models/best_reward_model4.pth"))
 loaded_model.eval()
 
 while True:
