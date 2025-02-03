@@ -24,6 +24,7 @@ loaded_model = QNetwork(state_size=state_size, action_size=action_size)
 loaded_model.load_state_dict(torch.load("./results/models/best_reward_model4.pth"))
 loaded_model.eval()
 
+idx = 0
 while True:
     state, data_type = env.reset()
     done = False
@@ -38,3 +39,5 @@ while True:
         done = done or truncated
         total_reward += reward
         state = next_state
+    print(f"EPISODE / SCORE : {idx+1} / {total_reward:.2f}")
+    idx += 1
