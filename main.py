@@ -53,7 +53,7 @@ LEARNING_RATE = 5e-4
 REPLAY_BUFFER_CAPACITY = 10000
 BATCH_SIZE = 64
 GAMMA = 0.999
-TARGETR_UPDATE_FREQUENCY = 5
+TARGET_UPDATE_FREQUENCY = 5
 
 epsilon = 1.0
 epsilon_decay = 0.9999
@@ -75,10 +75,10 @@ replay_buffer = ReplayBuffer(REPLAY_BUFFER_CAPACITY)
 result_rewards = []
 epsilons = []
 buff_size_log = []
-best_loss = float('-inf')
+best_reward = float('-inf')
 
 for episode in tqdm(range(EPISODES), desc="EPISODE TRAINING"):
-    state, data_type = env.reset()
+    state, _ = env.reset()
     done = False
     total_reward = 0
 
@@ -93,8 +93,8 @@ for episode in tqdm(range(EPISODES), desc="EPISODE TRAINING"):
         
         epsilon = max(min_epsilon, epsilon * epsilon_decay)
 
-        next_state, reward, done, trauncated, info = env.step(action)
-        done = done or trauncated
+        next_state, reward, done, truncated, info = env.step(action)
+        done = done or truncated
         total_reward += reward
 
         replay_buffer.add(state, action, reward, next_state, done)
@@ -115,18 +115,19 @@ for episode in tqdm(range(EPISODES), desc="EPISODE TRAINING"):
             expected_q = rewards + (GAMMA * max_next_q * (1 - dones)) 
 
             loss = nn.MSELoss()(current_q.squeeze(), expected_q.detach())
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            optimizer.zero_grad()
 
-    if best_loss < total_reward:
-        torch.save(q_network.state_dict(), f"./results/models/best_reward_model.pth")
-        best_loss = total_reward
+    if best_reward < total_reward:
+        if episode > int(EPISODES / 2):
+            torch.save(q_network.state_dict(), f"./results/models/best_reward_model{episode:04}.pth")
+        best_reward = total_reward
 
     result_rewards.append(total_reward)
     epsilons.append(epsilon)
     buff_size_log.append(replay_buffer.size())
-    if episode % TARGETR_UPDATE_FREQUENCY == 0:
+    if episode % TARGET_UPDATE_FREQUENCY == 0:
         target_network.load_state_dict(q_network.state_dict())
 
     if episode % 10 == 0:
