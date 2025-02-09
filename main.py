@@ -119,6 +119,9 @@ for episode in tqdm(range(EPISODES), desc="EPISODE TRAINING"):
             loss.backward()
             optimizer.step()
 
+    if episode % TARGET_UPDATE_FREQUENCY == 0:
+        target_network.load_state_dict(q_network.state_dict())
+
     if best_reward < total_reward and total_reward > 0:
         if episode > int(EPISODES / 2):
             torch.save(q_network.state_dict(), f"./results/models/best_reward_model{episode:04}.pth")
@@ -127,8 +130,6 @@ for episode in tqdm(range(EPISODES), desc="EPISODE TRAINING"):
     result_rewards.append(total_reward)
     epsilons.append(epsilon)
     buff_size_log.append(replay_buffer.size())
-    if episode % TARGET_UPDATE_FREQUENCY == 0:
-        target_network.load_state_dict(q_network.state_dict())
 
     if episode % 10 == 0:
         result_save(result_rewards, "Reward")
