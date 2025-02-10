@@ -57,7 +57,6 @@ TARGET_UPDATE_FREQUENCY = 5
 
 
 def main(env):
-    env = gym.make("LunarLander-v2", render_mode=None)
     state_size = env.observation_space.shape[0]
     action_size = env.action_space.n  
 
