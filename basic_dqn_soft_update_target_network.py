@@ -132,7 +132,7 @@ def main(env):
             # target_network 업데이트를 부드럽게 q_network로 업데이트 하기 위함
             soft_update(target_model=target_network, source_model=q_network, tau=TAU)
 
-        if best_reward < total_reward and total_reward > 0:
+        if best_reward <= total_reward and total_reward > 0:
             torch.save(q_network.state_dict(), f"./results/models/best_reward_model{episode:05}.pth")
             best_reward = total_reward
 
